@@ -1,6 +1,6 @@
 import os, string, argparse
 from tika import parser
-from base.logging import Logger
+from datascience_starter.base.logging import Logger
 
 class TextExtactor(Logger):
     """

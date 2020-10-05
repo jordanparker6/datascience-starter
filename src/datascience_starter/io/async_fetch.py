@@ -1,7 +1,7 @@
 import asyncio, aiohttp, json
 from asyncio_throttle import Throttler
 import tqdm
-from base.logging import Logger
+from datascience_starter.base.logging import Logger
 
 class AsyncFetch(Logger):
     """

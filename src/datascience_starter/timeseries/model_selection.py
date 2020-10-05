@@ -20,7 +20,7 @@ class TimeseriesGridsearchCV(BaseEstimator):
         self.estimator = estimator
         self.cv = cv
 
-    def _crossval(self, df, parameters, cv=5):
+    def crossval(self, df, parameters, cv=5):
         tscv = TimeSeriesSplit(n_splits=cv)
         score = []
         for train_index, test_index in tscv.split(df):
@@ -36,7 +36,7 @@ class TimeseriesGridsearchCV(BaseEstimator):
         values = parameters.values()
         options = [dict(zip(parameters.keys(), v)) for v in itertools.product(*parameters.values())]
         for option in tqdm(options):
-            score = self._crossval(df, option, self.cv)
+            score = self.crossval(df, option, self.cv)
             scores.append(score)
             params.append(option)
         scores = np.array(scores)

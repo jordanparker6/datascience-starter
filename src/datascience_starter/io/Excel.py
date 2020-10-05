@@ -1,6 +1,6 @@
 import xlwings as xw
 import pandas as pd
-from base.logging import Logger
+from datascience_starter.base.logging import Logger
 
 class Excel(Logger):
     """
