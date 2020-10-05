@@ -3,7 +3,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import make_pipeline 
 from sklearn.base import BaseEstimator
-from transforms.rbf import RBFFeatures
+from datascience_starter.transformations.rbf import RBFFeatures
 
 
 class LinearTimeseriesModel(BaseEstimator):
