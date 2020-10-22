@@ -31,7 +31,7 @@ class GLM(BaseEstimator):
 
     def __init__(self, likelihood, partial_pooled=False):
         assert likelihood in link_functions.keys(), "Liklihood not in expoential family"
-        self.dist = dist
+        self.likelihood = likelihood
         self.partial_pooled = partial_pooled
         self.link_function = link_functions[likelihood]
         self.model = pm.Model()
@@ -42,42 +42,46 @@ class GLM(BaseEstimator):
 
             # Priors for unknown model parameters
             alpha = pm.Normal('alpha', mu=0, sd=10)
-            beta = pm.Normal('beta', mu=0, sd=10, shape=X.shape[1])
+            beta = pm.Normal('beta', mu=0, sd=10, shape=(X.shape[1], 1))
 
             # Expected value of outcome
-            mu = self.link_funcation(alpha + beta * X)
+            mu = self.link_function(alpha + pm.math.dot(X, beta))
 
             # Likelihood function
-            if dist == 'bernoulli':
-                y = pm.Bernoulli('y', p=mu, observed=y)
-            elif dist == 'categorical':
-                y = pm.Bernoulli('y', p=mu, observed=y)
-            elif dist == 'binomial':
+            if self.likelihood == 'bernoulli' or self.likelihood == 'categorical':
+                y = pm.Bernoulli('y', p=mu, observed=y, shape=y.shape[1])
+            elif self.likelihood == 'binomial' or self.likelihood == 'multinomial':
                 raise NotImplementedError
-            elif dist == 'multinomial':
-                raise NotImplementedError
-            elif dist == 'poisson':
+            elif self.likelihood == 'poisson':
                 y = pm.Poisson('y', mu=mu, observed=y)
-            elif dist == 'normal':
-                sigma = pm.HalfCauchy.dist(beta=10, testval=1.0)
-                y = pm.Normal('y', mu=mu, sigma=sigma)
-            elif dist == 'student-t':
-                sigma = pm.HalfCauchy.dist(beta=10, testval=1.0)
+            elif self.likelihood == 'normal':
+                sigma = pm.HalfCauchy('sigma', beta=10, testval=1.0)
+                y = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
+            elif self.likelihood == 'student-t':
+                sigma = pm.HalfCauchy('sigma', beta=10, testval=1.0)
                 nu = pm.InverseGamma("nu", alpha=1, beta=1)
-                y = pm.StudentT('y', mu=mu, sigma=sigma, nu=nu)
-            elif dist == 'gamma':
+                y = pm.StudentT('y', mu=mu, sigma=sigma, nu=nu, observed=y)
+            elif self.likelihood == 'gamma':
                 raise NotImplementedError
-            elif dist == 'exponential':
+            elif self.likelihood == 'exponential':
                 raise NotImplementedError
     
-    def fit(self, X, y):
+    def fit(self, X, y, samples=1000, tune=10000, **kwargs):
         with self.model as model:
             self.definition(model, X, y)
-            self.trace = pm.sample(tune=5000, draws=500, chains=4, progressbar=True)
-
+            self.trace = pm.sample(samples, tune=tune, progressbar=True, **kwargs)
 
     def plot_trace(self):
         pm.traceplot(self.trace)
 
     def plot_posterior(self):
         pm.plot_posterior(self.trace)
+
+    def plot_joint(self):
+        pm.plot_joint(self.trace, kind='kde', fill_last=False)
+
+    def sample_posterior(self, samples):
+        return pm.sample_posterior_predictive(self.trace, samples=samples, model=self.model)
+
+    def plot_graph_model(self):
+        pm.model_to_graphviz(self.model)

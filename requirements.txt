@@ -6,3 +6,4 @@ tqdm
 statsmodels
 matplotlib
 tika
+pymc3

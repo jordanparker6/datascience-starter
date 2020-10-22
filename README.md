@@ -11,6 +11,8 @@ To install the datascience-starter package,
 2. `cd datascience-starter`
 3. `pip install .`
 
+To do... add a Dockerfile or bash one liner to set up.
+
 The datascience-starter package will be available for import within the notebooks using `import datascience_starter`.
 
 #### Use Case
