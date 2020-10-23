@@ -13,6 +13,7 @@ class Excel(Logger):
         super().__init__()
         self.file_name = file
         self.wb = xw.Book(file)
+        self.log.info(f"Excel File Read: {file}")
 
     def to_df(self, sheet, range="A1", expand='table'):
         df = pd.DataFrame(self.wb.sheets(sheet).range(range).expand(expand).value) 
