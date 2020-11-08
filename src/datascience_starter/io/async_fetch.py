@@ -12,6 +12,9 @@ class AsyncFetch(Logger):
     def __init__(self):
         super().__init__()
 
+    def fetch(self, url, rate=None):
+        return self.fetch_all([url], rate)
+
     def fetch_all(self, urls, rate=None):
         """ Executes a throtled async fetch of url list
             Args:
@@ -26,37 +29,39 @@ class AsyncFetch(Logger):
     # - Async Handling Functions ---------------------
     # ------------------------------------------------
 
-    async def _async_fetch(self, session, url):
+    async def _fetch(self, session, url, i):
         """Execute an http call async
         Args:
             session: context for making the http call
             url: URL to call
+            i: index of fetch
         Return:
             responses: The json response
         """
         async with session.get(url, timeout=60*30) as response:
             resp = await response.read()
             self.log.debug(f'Made request: {url}. Status: {response.status}')
-            return json.loads(resp)
+            return json.loads(resp), i
 
-    async def _async_throttled_fetch(self, session, url, throttler):
-        """Execute an http call async
+    async def _throttler(self, session, url, throttler, i):
+        """A wrapper to throttle async fetches
             Args:
                 session: context for making the http call
                 url: URL to call
                 rate: the number of concurrent tasks
                 throttler : asyncio-throttle class
+                i: index of fetch
             Return:
                 responses: json response
         """
         if throttler:
             async with throttler:
-                return await self._async_fetch(session, url)
+                return await self._fetch(session, url, i)
         else:
-            return await self._async_fetch(session, url)
+            return await self._fetch(session, url, i)
 
 
-    async def _async_fetch_all(self, urls, fetch, rate=None):
+    async def _fetch_all(self, urls, rate=None):
         """ Gather many HTTP call made async
         Args:
             urls: a list of url strings
@@ -71,7 +76,9 @@ class AsyncFetch(Logger):
         if rate:
             throttler = Throttler(rate_limit=rate, period=1)
         async with aiohttp.ClientSession(connector=connector) as session:
-            tasks = [fetch(session, url, throttler)  for url in urls]
+            tasks = [self._throttler(session, url, throttler, i)  for i, url in enumerate(urls)]
             responses = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
+        responses = sorted(responses, key=lambda x: x[1])
+        responses = list(map(lambda x: x[0], responses))
         return responses
     

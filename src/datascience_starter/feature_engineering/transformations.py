@@ -2,7 +2,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 import numpy as np
 import pandas as pd
 
-class RBFFeatures(BaseEstimator):
+class RBFFeatures(BaseEstimator, TransformerMixin):
     """
     RBFFeatures
      Builds a set of monthly Radial Basis Function features from a
@@ -23,6 +23,7 @@ class RBFFeatures(BaseEstimator):
         # alpha --> width tunning parameter
         t = t % 12
         return np.exp(-1 / (2 * alpha) * np.power(t - month, 2))
+        
     def transform(self, X):
         data = { k: self.rbf(X.index.month, i, self.alpha) for i, k in enumerate(self.months) }
         data = pd.DataFrame(data, index=X.index)

@@ -1,87 +1,50 @@
-import numpy as np
 import pymc3 as pm
-from sklearn.base import BaseEstimator
+import numbers
+import numpy as np
+import theano.tensor as tt
+from datascience_starter.base.estimators import PyMC3Estimator
+from datascience_starter.models.glm.families import families
 
-def sigmoid(x):
-    return 1 / ( 1 + np.exp(-x))
-
-link_functions = {
-    "normal": lambda x: x,
-    "student-t": lambda x: x,
-    "exponential": lambda x: -1 * np.power(x, -1),
-    "gamma": lambda x: -1 * np.power(x, -1),
-    "poisson": np.exp,
-    "bernoulli": sigmoid,
-    "binomial": sigmoid,
-    "categorical": sigmoid,
-    "multinomial": sigmoid
-}
-
-class GLM(BaseEstimator):
+class GLM(PyMC3Estimator):
     """
     GLM
-     A bayesian implempentation of Geneeralized Linear Models.
+     A bayesian implempentation of Generalized Linear Models.
 
      A GLM is a generalised approach to linear models that can model
      any likelihood in the exponential family using a linear combination
      of the depedent variables and a link function.
 
      -> Logisitic Regression is a bernouli liklihood function
+     -> Linear Regression is a normal liklihood function
     """
 
-    def __init__(self, likelihood, partial_pooled=False):
-        assert likelihood in link_functions.keys(), "Liklihood not in expoential family"
-        self.likelihood = likelihood
-        self.partial_pooled = partial_pooled
-        self.link_function = link_functions[likelihood]
-        self.model = pm.Model()
+    def __init__(self, 
+            likelihood, 
+            prior = pm.Laplace, 
+            prior_params = { "mu": 0,  "b": 1 }
+        ):
+        super().__init__()
+        assert likelihood in families.keys(), "Likelihood not in expoential family."
+        self.family = families[likelihood]
+        self.prior = prior
+        self.params = prior_params
 
     def definition(self, model, X, y):
-
+        # build assertion to check shape of X and y
         with model:
+            # Priors for linear regression
+            alpha = self.prior('alpha', **self.params)
+            beta = self.prior('beta', shape=(X.shape[1]), **self.params)
 
-            # Priors for unknown model parameters
-            alpha = pm.Normal('alpha', mu=0, sd=10)
-            beta = pm.Normal('beta', mu=0, sd=10, shape=(X.shape[1], 1))
+            # Priors for likelihood family
+            priors = {}
+            for key, val in self.family.priors.items():
+                if isinstance(val, (numbers.Number, np.ndarray, np.generic)):
+                    priors[key] = val
+                else:
+                    priors[key] = model.Var(key, val)
 
-            # Expected value of outcome
-            mu = self.link_function(alpha + pm.math.dot(X, beta))
-
-            # Likelihood function
-            if self.likelihood == 'bernoulli' or self.likelihood == 'categorical':
-                y = pm.Bernoulli('y', p=mu, observed=y, shape=y.shape[1])
-            elif self.likelihood == 'binomial' or self.likelihood == 'multinomial':
-                raise NotImplementedError
-            elif self.likelihood == 'poisson':
-                y = pm.Poisson('y', mu=mu, observed=y)
-            elif self.likelihood == 'normal':
-                sigma = pm.HalfCauchy('sigma', beta=10, testval=1.0)
-                y = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
-            elif self.likelihood == 'student-t':
-                sigma = pm.HalfCauchy('sigma', beta=10, testval=1.0)
-                nu = pm.InverseGamma("nu", alpha=1, beta=1)
-                y = pm.StudentT('y', mu=mu, sigma=sigma, nu=nu, observed=y)
-            elif self.likelihood == 'gamma':
-                raise NotImplementedError
-            elif self.likelihood == 'exponential':
-                raise NotImplementedError
-    
-    def fit(self, X, y, samples=1000, tune=10000, **kwargs):
-        with self.model as model:
-            self.definition(model, X, y)
-            self.trace = pm.sample(samples, tune=tune, progressbar=True, **kwargs)
-
-    def plot_trace(self):
-        pm.traceplot(self.trace)
-
-    def plot_posterior(self):
-        pm.plot_posterior(self.trace)
-
-    def plot_joint(self):
-        pm.plot_joint(self.trace, kind='kde', fill_last=False)
-
-    def sample_posterior(self, samples):
-        return pm.sample_posterior_predictive(self.trace, samples=samples, model=self.model)
-
-    def plot_graph_model(self):
-        pm.model_to_graphviz(self.model)
+            # Likelihood Priors
+            yhat = self.family.link(alpha + pm.math.dot(X, beta))
+            priors[self.family.parent] = yhat
+            self.family.likelihood("y", observed=y, **priors)
