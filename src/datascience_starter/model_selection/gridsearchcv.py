@@ -1,6 +1,6 @@
 import itertools
 import numpy as np
-from pandas import DataFrame
+import pandas as pd
 from typing import Dict, Any, Tuple
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.model_selection import ShuffleSplit
@@ -21,7 +21,7 @@ class GridsearchCVBase(BaseEstimator):
         self.cv = cv    #: The number of folds in kflod cross validation.
         self.splitter = None    #: A class for splitting the dataframe into k-folds.
 
-    def crossval(self, df: DataFrame, parameters: Dict[str, Any], cv: int = 5) -> np.float:
+    def crossval(self, df: pd.DataFrame, parameters: Dict[str, Any], cv: int = 5) -> np.float:
         """Performs k-fold cross validation using the estimators score method and the provided splitter.
 
         Args:
@@ -44,7 +44,7 @@ class GridsearchCVBase(BaseEstimator):
             score.append(model.score(test))
         return np.array(score).mean()
 
-    def fit(self, df: DataFrame, parameters: Dict[str, Any], min_loss: bool = True) -> Tuple[Dict[str, Any], np.ndarray]:
+    def fit(self, df: pd.DataFrame, parameters: Dict[str, Any], min_loss: bool = True) -> Tuple[Dict[str, Any], np.ndarray]:
         """Fit method for cross validated grid search.
 
         Args:

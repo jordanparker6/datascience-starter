@@ -2,11 +2,17 @@ import pymc3 as pm
 import numpy as np
 from sklearn.base import BaseEstimator
 
-class PyMC3Estimator(BaseEstimator):
-    """A base class for PyMC3 estimators using the sklearn API."""
+class PyMC3Estimator:
+    """
+    A base class for PyMC3 estimators using the sklearn API.
+    
+    Attributes:
+        model (pymc3.Model): A PyMC3 model object.
+
+    """
 
     def __init__(self):
-        self.model = pm.Model() #: A PyMC3 model object.
+        self.model = pm.Model()
 
     def fit(self, X: np.ndarray, y: np.ndarray, samples: int = 1000, tune: int = 1000, **kwargs):
         """Defines the PyMC3 model and evaluates the trace and MAP.

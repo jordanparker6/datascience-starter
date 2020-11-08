@@ -1,10 +1,14 @@
 import urllib
 import json
 from typing import Dict, List, Any
-from datascience_starter.io.async_fetch import AsyncFetch
+from datascience_starter.io import AsyncFetch
 
 class Geocoder(AsyncFetch):
     """ A geocoder using Google Maps geocoding API.
+
+    Harnesses Google Maps geocoding API to return the 
+    Longtitude, Latitude and of the address and the 
+    formatted address string.
 
     Args:
         api_key: A Google Public API key with geocoding enabled.

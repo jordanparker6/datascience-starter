@@ -1,8 +1,10 @@
-from typing import Dict, List, Any, Union
-from aiohttp import ClientSession, TCPConnector
+import tqdm
+import json
+import asyncio
+import aiohttp
 from asyncio_throttle import Throttler
-import tqdm, json, asyncio
-from datascience_starter.base.logging import Logger
+from typing import Dict, List, Any, Optional
+from datascience_starter.base import Logger
 
 JsonType = Dict[str, Any]
 
@@ -25,7 +27,7 @@ class AsyncFetch(Logger):
         """
         return self.fetch_all([url], rate=None)
 
-    def fetch_all(self, urls: List[str], rate: Union[int, None] = None) -> List[JsonType]:
+    def fetch_all(self, urls: List[str], rate: Optional[int] = None) -> List[JsonType]:
         """Executes a throtled async fetch for a list of urls.
 
         Args:
@@ -42,7 +44,7 @@ class AsyncFetch(Logger):
     # - Async Handling Functions ---------------------
     # ------------------------------------------------
 
-    async def _fetch(self, session: ClientSession, url: str, i: int) -> JsonType:
+    async def _fetch(self, session: aiohttp.ClientSession, url: str, i: int) -> JsonType:
         """A handler to execulte a async HTTP request.
 
         Args:
@@ -59,7 +61,7 @@ class AsyncFetch(Logger):
             self.log.debug(f'Made request: {url}. Status: {response.status}')
             return json.loads(resp), i
 
-    async def _throttler(self, session: ClientSession, url: str, throttler: Throttler, i: int):
+    async def _throttler(self, session: aiohttp.ClientSession, url: str, throttler: Throttler, i: int):
         """A throttling wrapper.
 
         Args:
@@ -80,7 +82,7 @@ class AsyncFetch(Logger):
             return await self._fetch(session, url, i)
 
 
-    async def _fetch_all(self, urls: List[str], rate: Union[int, None] = None) -> List[JsonType]:
+    async def _fetch_all(self, urls: List[str], rate: Optional[int] = None) -> List[JsonType]:
         """ Gather many HTTP call made async
 
         Args:
@@ -92,11 +94,11 @@ class AsyncFetch(Logger):
 
         """
         self.log.info('Starting: _async_fetch_all')
-        connector = TCPConnector(verify_ssl=False, limit=100)
+        connector = aiohttp.TCPConnector(verify_ssl=False, limit=100)
         throttler = None
         if rate:
             throttler = Throttler(rate_limit=rate, period=1)
-        async with ClientSession(connector=connector) as session:
+        async with aiohttp.ClientSession(connector=connector) as session:
             tasks = [self._throttler(session, url, throttler, i)  for i, url in enumerate(urls)]
             responses = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
         responses = sorted(responses, key=lambda x: x[1])

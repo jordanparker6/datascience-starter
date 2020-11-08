@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'datascience_starter'
+project = 'Data Science Starter Pack'
 copyright = '2020, Jordan Parker'
 author = 'Jordan Parker'
 

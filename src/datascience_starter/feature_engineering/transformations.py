@@ -1,8 +1,8 @@
-from sklearn.base import BaseEstimator, TransformerMixin
 import numpy as np
 import pandas as pd
+import sklearn.base as base
 
-class RBFFeatures(BaseEstimator, TransformerMixin):
+class RBFFeatures(base.TransformerMixin):
     """Builds a set of monthly Radial Basis Function features from a pandas datetime index.
 
      Args:

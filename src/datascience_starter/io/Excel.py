@@ -1,7 +1,7 @@
 import xlwings as xw
 import pandas as pd
-from typing import Union
-from datascience_starter.base.logging import Logger
+from typing import Optional
+from datascience_starter.base import Logger
 
 class Excel(Logger):
     """A class for interacting with Excel workbooks
@@ -33,7 +33,7 @@ class Excel(Logger):
         df = pd.DataFrame(df.values[1:], columns=headers)
         return df
 
-    def to_excel(self, df: pd.DataFrame, sheet: str, range: str = "A1", clear_range: Union[str, None] = None):
+    def to_excel(self, df: pd.DataFrame, sheet: str, range: str = "A1", clear_range: Optional[str] = None):
         """Output a pandas DataFrame to an excel range.
 
         Args:

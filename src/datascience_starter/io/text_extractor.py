@@ -1,7 +1,7 @@
 import os, string, argparse
 from tika import parser
-from typing import Union
-from datascience_starter.base.logging import Logger
+from typing import Optional
+from datascience_starter.base import Logger
 
 class TextExtactor(Logger):
     """ A class to extract text from files within a directoring using Apache Tika.
@@ -24,7 +24,7 @@ class TextExtactor(Logger):
         self.headers = { 'X-Tika-PDFextractInlineImages': 'true' }
         self.output_dir = output_dir
 
-    def extract(self, input_dir: str, limit: Union[int, None] = None):
+    def extract(self, input_dir: str, limit: Optional[int] = None):
         """ Extracts the text from each file and writes to the output directory.
 
         Args:
