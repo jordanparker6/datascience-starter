@@ -6,6 +6,9 @@ Data Science Starter Pack
    :description: This document describes how to use the Data Science Starter Pack.
    :keywords: Data Science
 
+Introduction
+------------
+
 The Data Science Starter Pack contains usefull code for reuse in data science projects.
 
 
@@ -13,7 +16,7 @@ The Data Science Starter Pack contains usefull code for reuse in data science pr
    :maxdepth: 4
    :caption: Contents:
 
-   src/modules
+   src/datascience_starter
 
 Indices and tables
 ==================

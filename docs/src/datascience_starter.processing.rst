@@ -4,10 +4,10 @@ datascience\_starter.processing package
 Submodules
 ----------
 
-datascience\_starter.processing.geocoding module
-------------------------------------------------
+datascience\_starter.processing.cleaning module
+-----------------------------------------------
 
-.. automodule:: datascience_starter.processing.geocoding
+.. automodule:: datascience_starter.processing.cleaning
    :members:
    :undoc-members:
    :show-inheritance:

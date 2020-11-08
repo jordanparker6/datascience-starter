@@ -4,11 +4,19 @@ class DistanceMatcher:
     """Base class for distance matching.
     """
 
-    def distance(self, x: np.ndarray, y: np.ndarray):
-        return np.linalg.norm(x - y, order=2)
+    def distance(self, a: np.ndarray, b: np.ndarray):
+        return np.linalg.norm(a - b, order=2)
 
-    def distance_matrix(self, x: np.ndarray, y: np.ndarray):
+    def distance_matrix(self, a: np.ndarray, b: np.ndarray):
         result = []
-        for i in x:
-            for j in y:
-                pass
+        for i in a:
+            row = []
+            for j in b:
+                row.append(self.distance(i, j))
+            result.append(row)
+        return result
+
+
+class GeoMatcher(DistanceMatcher):
+    def distance(self, a: np.ndarray, b: np.ndarray):
+        return
