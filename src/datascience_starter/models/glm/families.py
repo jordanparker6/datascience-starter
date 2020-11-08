@@ -10,17 +10,12 @@ inverse = lambda x: x ** -1
 log = pm.math.log
 
 class Family:
+    """Base class for distributions from the exponential family
     """
-     Exponential Family Base Class
-      -> Link: Mean Link Function
-      -> Likelihood: Likelihood distribution
-      -> Parent: Likelihood paramter predicted by GLM
-      -> Priors: Likelihood priors
-    """
-    link = None
-    likelihood = None
-    parent = None
-    priors = {}
+    link = None         #: Mean link function
+    likelihood = None   #: Likelihood distribution
+    parent = None       #: Likelihood parameter predicted by GLM
+    priors = {}         #: Likelihood priors
 
 class Normal(Family):
     link = identity

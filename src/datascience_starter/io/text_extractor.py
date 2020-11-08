@@ -1,32 +1,36 @@
 import os, string, argparse
 from tika import parser
+from typing import Union
 from datascience_starter.base.logging import Logger
 
 class TextExtactor(Logger):
+    """ A class to extract text from files within a directoring using Apache Tika.
+     
+    Please note that java_runtime_eviroment and tesseract must be installed and with
+    the PATH varriable for the Tika server to work.
+     
+    Args:
+        output_dir: The directory to save extracted text files.
+
+    Attributes:
+        server (str): The server address.
+        headers (dict): The headers for the Apache Tika requests.
+        ouput_dir (str): The directory to write output files.
+
     """
-    TextExtractor
-     Sends requests to an Apache Tika to extract text from all thefiles within a directory.
-     * Please note that java_runtime_eviroment and tesseract must be installed and with
-       the PATH varriable for the Tika server to work.
-     args:
-       -> output_dir: the directory to save extracted text files
-    """
-    def __init__(self, output_dir):
+    def __init__(self, output_dir: str):
         super().__init__()
         self.server = 'http://localhost:9998/rmeta/text'
         self.headers = { 'X-Tika-PDFextractInlineImages': 'true' }
         self.output_dir = output_dir
 
-    def extract(self, input_dir, limit=None):
-        """
-        Walks through each file in the direcotry and complete the following:
-         (1) rename the filename to ascii (Apache Tika requirement);
-         (2) parse the file to .txt with Apache Tika;
-         (3) encode the text to 'utf-8', ignoring encoding errors;
-         (4) save the bytes to the output directory
-        args:
-          -> input_dir: the directory to crawl and extract
-          -> limit: an integer limit on number of files crawled
+    def extract(self, input_dir: str, limit: Union[int, None] = None):
+        """ Extracts the text from each file and writes to the output directory.
+
+        Args:
+            input_dir: The directory to crawl and extract text.
+            limit: The limit on the number of files extracted.
+
         """
 
         for i, paths in enumerate(os.walk(input_dir)):
@@ -51,7 +55,17 @@ class TextExtactor(Logger):
                 continue
             break
 
-    def _rename_ascii(self, root, file):
+    def _rename_ascii(self, root: str, file: str) -> str:
+        """Renames file names so that they are ascii compliant.
+
+        Args:
+            root: The root of the file path.
+            file: The file name
+
+        Returns:
+            An ascii compliant file name.
+
+        """
         try:
             file.encode('ascii')
             file_name = file

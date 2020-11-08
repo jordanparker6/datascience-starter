@@ -3,18 +3,28 @@ import numpy as np
 from sklearn.base import BaseEstimator
 
 class PyMC3Estimator(BaseEstimator):
+    """A base class for PyMC3 estimators using the sklearn API.
     """
-    PyMC3Estimator
-      A base class for PyMC3 estimators using the sklearn API.
-    """
-    def __init__(self):
-        self.model = pm.Model()
 
-    def fit(self, X, y, samples=1000, tune=1000, **kwargs):
+    def __init__(self):
+        self.model = pm.Model() #: A PyMC3 model object.
+
+    def fit(self, X: np.ndarray, y: np.ndarray, samples: int = 1000, tune: int = 1000, **kwargs):
+        """Defines the PyMC3 model and evaluates the trace and MAP.
+
+        Args:
+            X: The depedent variables / features.
+            y: The independent variable / target.
+            samples (optional): The numper of samples to draw using HMCM.
+            tune (optional): The number of samples to burn-in during HMCM.
+            **kwargs: Additional key word arguements for PyMC3's pm.sample method.
+            
+        """
         with self.model as model:
             self.definition(model, X, y, **kwargs)
             self.map = pm.find_MAP()
             self.trace = pm.sample(samples, tune=tune, progressbar=True, **kwargs)
+        return self
     
     def definition(self, model, X, y):
         raise NotImplementedError
