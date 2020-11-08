@@ -1,6 +1,6 @@
 import urllib
 import json
-from typing import Dict, List
+from typing import Dict, List, Any
 from datascience_starter.io.async_fetch import AsyncFetch
 
 class Geocoder(AsyncFetch):

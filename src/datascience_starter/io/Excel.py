@@ -8,16 +8,12 @@ class Excel(Logger):
     
     Args:
         file: The file name for the Excel workbook.
-    
-    Attributes:
-        file_name (str): The file name for the Excel workbook.
-        wb (obj): The xlwings workbook object.
 
     """
     def __init__(self, file: str):
         super().__init__()
-        self.file_name = file
-        self.wb = xw.Book(file)
+        self.file_name = file   #: The file name of the Excel workbook.
+        self.wb = xw.Book(file) #: The xlwings workbook object.
         self.log.info(f"Excel File Read: {file}")
 
     def to_df(self, sheet: str, range: str = "A1", expand: str = 'table'):

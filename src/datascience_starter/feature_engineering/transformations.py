@@ -26,10 +26,6 @@ class RBFFeatures(BaseEstimator, TransformerMixin):
             A numpy array of radial basis tranformed values.
 
         """
-        # Radial Basis Function
-        # t --> time in month units
-        # month --> position of peak
-        # alpha --> width tunning parameter
         t = t % 12
         return np.exp(-1 / (2 * alpha) * np.power(t - month, 2))
         

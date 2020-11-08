@@ -1,6 +1,7 @@
 import itertools
 import numpy as np
-from typing import Dict, Any, Tupple
+from pandas import DataFrame
+from typing import Dict, Any, Tuple
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.model_selection import ShuffleSplit
 from sklearn.base import BaseEstimator
@@ -12,19 +13,15 @@ class GridsearchCVBase(BaseEstimator):
     Args:
         estimator: A scikit learn stimator that implements the fit and score methods.
         cv: The number of folds in kfold cross validation.
-    
-    Attributes:
-        estimator: A scikit learn stimator that implements the fit and score methods.
-        cv: The number of folds in kfold cross validation.
 
     """
     def __init__(self, estimator, cv: int = 5):
         super().__init__()
-        self.estimator = estimator
-        self.cv = cv
-        self.splitter = None
+        self.estimator = estimator  #: A scikit learn estimator that implements fit and score methods.
+        self.cv = cv    #: The number of folds in kflod cross validation.
+        self.splitter = None    #: A class for splitting the dataframe into k-folds.
 
-    def crossval(self, df: pd.DataFrame, parameters: Dict[str, Any], cv: int = 5) -> np.float:
+    def crossval(self, df: DataFrame, parameters: Dict[str, Any], cv: int = 5) -> np.float:
         """Performs k-fold cross validation using the estimators score method and the provided splitter.
 
         Args:
@@ -47,7 +44,7 @@ class GridsearchCVBase(BaseEstimator):
             score.append(model.score(test))
         return np.array(score).mean()
 
-    def fit(self, df: pd.DataFrame, parameters: Dict[str, Any], min_loss: bool = True) -> Tupple(Dict[str, Any], np.ndarray):
+    def fit(self, df: DataFrame, parameters: Dict[str, Any], min_loss: bool = True) -> Tuple[Dict[str, Any], np.ndarray]:
         """Fit method for cross validated grid search.
 
         Args:
@@ -81,7 +78,7 @@ class GridsearchCV(GridsearchCVBase):
 
 
 class TimeseriesGridsearchCV(GridsearchCVBase):
-    """" A gridsearch and crossvalidation approach for timeseries datasets.
+    """"A gridsearch and crossvalidation approach for timeseries datasets.
     """
     def __init__(self, estimator, cv=5):
         super().__init__()

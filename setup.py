@@ -9,7 +9,7 @@ def readlines(fname):
 
 setup(
     name='datascience_starter',
-    packages=find_packages(where='src'),
+    packages=find_packages(where='./src'),
     package_dir={"": "src"},
     install_requires=readlines('requirements.txt'),
     description='An data science project start up pack.',

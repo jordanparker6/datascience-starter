@@ -1,0 +1,37 @@
+datascience\_starter.processing package
+=======================================
+
+Submodules
+----------
+
+datascience\_starter.processing.geocoding module
+------------------------------------------------
+
+.. automodule:: datascience_starter.processing.geocoding
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datascience\_starter.processing.matching module
+-----------------------------------------------
+
+.. automodule:: datascience_starter.processing.matching
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+datascience\_starter.processing.sampling module
+-----------------------------------------------
+
+.. automodule:: datascience_starter.processing.sampling
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: datascience_starter.processing
+   :members:
+   :undoc-members:
+   :show-inheritance:

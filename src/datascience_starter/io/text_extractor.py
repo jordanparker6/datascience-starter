@@ -10,7 +10,7 @@ class TextExtactor(Logger):
     the PATH varriable for the Tika server to work.
      
     Args:
-        output_dir: The directory to save extracted text files.
+        output_dir (str): The directory to save extracted text files.
 
     Attributes:
         server (str): The server address.

@@ -2,6 +2,7 @@ import pymc3 as pm
 import numbers
 import numpy as np
 import theano.tensor as tt
+from typing import Dict
 from datascience_starter.base.estimators import PyMC3Estimator
 from datascience_starter.models.glm.families import families
 
@@ -22,7 +23,7 @@ class GLM(PyMC3Estimator):
     def __init__(self, 
             likelihood: str, 
             prior = pm.Laplace, 
-            prior_params: Dict(str, float) = { "mu": 0.0,  "b": 1.0 }
+            prior_params: Dict[str, float] = { "mu": 0.0,  "b": 1.0 }
         ):
         super().__init__()
         assert likelihood in families.keys(), "Likelihood not in expoential family."

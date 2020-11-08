@@ -8,3 +8,5 @@ matplotlib
 tika
 pymc3
 seaborn
+sphinx
+sphinx-rtd-theme

@@ -3,8 +3,7 @@ import numpy as np
 from sklearn.base import BaseEstimator
 
 class PyMC3Estimator(BaseEstimator):
-    """A base class for PyMC3 estimators using the sklearn API.
-    """
+    """A base class for PyMC3 estimators using the sklearn API."""
 
     def __init__(self):
         self.model = pm.Model() #: A PyMC3 model object.

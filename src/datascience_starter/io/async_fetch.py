@@ -4,6 +4,8 @@ from asyncio_throttle import Throttler
 import tqdm, json, asyncio
 from datascience_starter.base.logging import Logger
 
+JsonType = Dict[str, Any]
+
 class AsyncFetch(Logger):
     """ A base class for asyncronus HTTP fetching.
     """
@@ -11,7 +13,7 @@ class AsyncFetch(Logger):
     def __init__(self):
         super().__init__()
 
-    def fetch(self, url: str) -> Dict[str, Any]:
+    def fetch(self, url: str) -> JsonType:
         """Executes an async fetch.
 
         Args:
@@ -23,7 +25,7 @@ class AsyncFetch(Logger):
         """
         return self.fetch_all([url], rate=None)
 
-    def fetch_all(self, urls: List[str], rate: Union[int, None] = None) -> List[Dict[str, Any]]:
+    def fetch_all(self, urls: List[str], rate: Union[int, None] = None) -> List[JsonType]:
         """Executes a throtled async fetch for a list of urls.
 
         Args:
@@ -40,7 +42,7 @@ class AsyncFetch(Logger):
     # - Async Handling Functions ---------------------
     # ------------------------------------------------
 
-    async def _fetch(self, session: ClientSession, url: str, i: int) -> Dict[str, Any]:
+    async def _fetch(self, session: ClientSession, url: str, i: int) -> JsonType:
         """A handler to execulte a async HTTP request.
 
         Args:
@@ -78,7 +80,7 @@ class AsyncFetch(Logger):
             return await self._fetch(session, url, i)
 
 
-    async def _fetch_all(self, urls: List[str], rate: Union[int, None] = None) -> List[Dict[str, Any]]:
+    async def _fetch_all(self, urls: List[str], rate: Union[int, None] = None) -> List[JsonType]:
         """ Gather many HTTP call made async
 
         Args:
