@@ -31,7 +31,7 @@ class GLM(PyMC3Estimator):
         self.prior = prior
         self.params = prior_params
 
-    def definition(self, model, X: np.ndarray, y: np.ndarray):
+    def _definition(self, model, X: np.ndarray, y: np.ndarray):
         # build assertion to check shape of X and y
         with model:
             # Priors for linear regression

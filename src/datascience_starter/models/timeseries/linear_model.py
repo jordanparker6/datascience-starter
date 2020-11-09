@@ -7,27 +7,32 @@ from datascience_starter.feature_engineering.transformations import RBFFeatures
 
 
 class LinearTimeseriesModel(BaseEstimator):
-    """
-    LinearTimeseriesModel
-     A linear timeseries model leveraging exponentially decayed 
-     weights to prioritise recent entries and RBF features to
-     engineer seasonality
+    """A simple linear model for timeseries analysis.
+
+     Provides a simple linear timeseries that models timeseries data
+     on time depedency, without autocorrelation (e.g. ARIMA).
+     The model leveraging exponentially decayed weights to prioritise 
+     recent entries and RBF features to engineer seasonality.
     
-    args:
-     -> alpha: hyperparameter for RBFFeatures
-     -> r: hyperparameter for exponential decay
+    Args:
+        alpha (float): The hyperparameter for RBFFeatures. Values between (0, 1).
+        r (float): hyperparameter for exponential decay
+
+    Attributes:
+        params: The model hyperparameters.
+        model: The LinearRegression model class from scikit-learn.
     """
-    def __init__(self, alpha, r):
+    def __init__(self, alpha: float, r: float):
         super().__init__()
         self.params = { "alpha": alpha, "r": r }
         self.model = LinearRegression()
 
     def transform(self, df, ylabel='y', fit=False):
-            rbf = RBFFeatures(self.params['alpha'])
-            df = rbf.transform(df)
-            X = df.drop([ylabel], axis=1)
-            y = df[ylabel]
-            return X, y
+        rbf = RBFFeatures(self.params['alpha'])
+        df = rbf.transform(df)
+        X = df.drop([ylabel], axis=1)
+        y = df[ylabel]
+        return X, y
 
     def fit(self, df, ylabel='y'):
         X, y = self.transform(df, ylabel, fit=True)
@@ -53,8 +58,6 @@ class LinearTimeseriesModel(BaseEstimator):
             return
 
     def _ewa(self, n, r):
-        # Exponential Weighted Average
-        # -> r [0,1]
         x = np.arange(0, n)
         func = lambda i: r ** i * (1 - r) / (1 - np.power(r, n))
         return np.flip(np.array([func(i) for i in x]))

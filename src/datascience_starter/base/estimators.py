@@ -23,15 +23,29 @@ class PyMC3Estimator:
             samples (optional): The numper of samples to draw using HMCM.
             tune (optional): The number of samples to burn-in during HMCM.
             **kwargs: Additional key word arguements for PyMC3's pm.sample method.
+        
+        Attributes:
+            map: The Maxiumum A Posterior estimate of the parameter values.
+            trace: The sampled values from the posterior distributions.
             
         """
         with self.model as model:
-            self.definition(model, X, y, **kwargs)
+            self._definition(model, X, y, **kwargs)
             self.map = pm.find_MAP()
             self.trace = pm.sample(samples, tune=tune, progressbar=True, **kwargs)
         return self
     
-    def definition(self, model, X, y):
+    def _definition(self, model, X, y):
+        """The definition of the PyMC3 model.
+
+        Args:
+            model (pymc3.Model): The PyMC3 model to define (e.g. self.model).
+            X (np.ndarray): A matrix of the feactures.
+            y (np.ndarray): The target vector.
+
+        Raises:
+            NotImplementedError: must be defined in inherited class.
+        """
         raise NotImplementedError
 
     def predict(self, X, **kwargs):
