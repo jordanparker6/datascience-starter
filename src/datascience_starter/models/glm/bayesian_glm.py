@@ -3,23 +3,27 @@ import numbers
 import numpy as np
 import theano.tensor as tt
 from typing import Dict
-from datascience_starter.base.estimators import PyMC3Estimator
+from datascience_starter.base import PyMC3Estimator
 from datascience_starter.models.glm.families import families
 
 class GLM(PyMC3Estimator):
     """A bayesian implempentation of Generalized Linear Models.
 
-     A GLM is a generalised approach to linear models that can model
-     any likelihood in the exponential family using a linear combination
-     of the depedent variables and a link function.
+    A GLM is a generalised approach to linear models that can model
+    any likelihood in the exponential family using a linear combination
+    of the depedent variables and a link function.
 
     Args:
         liklihood: A string indicatin the distribution of the liklihood.
         prior: A PyMC3 distribution for the priors over alpha and beta.
         prior_params: The parameters for the priors over alpha and beta.
 
+    Attributes:
+        family (Family): The Family class for the selected likelihood.
+        prior: A PyMC3 distribution for the priors over alpha and beta.
+        prior_params: The parameters for the priors over alpha and beta.
+        
     """
-
     def __init__(self, 
             likelihood: str, 
             prior = pm.Laplace, 

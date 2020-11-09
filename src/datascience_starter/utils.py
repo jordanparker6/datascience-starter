@@ -1,3 +1,9 @@
+"""A collection of utility classes and methods.
+
+This module contains utility classes and methods (e.g. logging).
+
+"""
+
 import os
 import logging
 
@@ -8,6 +14,7 @@ logging.basicConfig(
 
 class Logger:
     """The default logging class.
+    
     Attributes:
         log (logging.Logger): An initiated logging object.
     """

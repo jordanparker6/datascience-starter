@@ -4,7 +4,8 @@ import asyncio
 import aiohttp
 from asyncio_throttle import Throttler
 from typing import Dict, List, Any, Optional
-from datascience_starter.base import Logger
+
+from datascience_starter.utils import Logger
 
 JsonType = Dict[str, Any]
 

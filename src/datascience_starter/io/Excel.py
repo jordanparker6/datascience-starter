@@ -1,7 +1,8 @@
 import xlwings as xw
 import pandas as pd
 from typing import Optional
-from datascience_starter.base import Logger
+
+from datascience_starter.utils import Logger
 
 class Excel(Logger):
     """A class for interacting with Excel workbooks

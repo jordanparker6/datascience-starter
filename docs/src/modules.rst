@@ -1,5 +1,5 @@
-datascience_starter
-===================
+src
+===
 
 .. toctree::
    :maxdepth: 4

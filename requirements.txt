@@ -10,4 +10,5 @@ pymc3
 seaborn
 sphinx
 sphinx-rtd-theme
+sphinx-markdown-builder
 pylint

@@ -1,8 +1,14 @@
+"""A module for abstract base classes.
+
+This module contains ABC for the development of estiamtors.
+
+"""
+
 import pymc3 as pm
 import numpy as np
-from sklearn.base import BaseEstimator
+from abc import ABC, abstractmethod
 
-class PyMC3Estimator:
+class PyMC3Estimator(ABC):
     """
     A base class for PyMC3 estimators using the sklearn API.
     
@@ -10,7 +16,6 @@ class PyMC3Estimator:
         model (pymc3.Model): A PyMC3 model object.
 
     """
-
     def __init__(self):
         self.model = pm.Model()
 
@@ -35,6 +40,7 @@ class PyMC3Estimator:
             self.trace = pm.sample(samples, tune=tune, progressbar=True, **kwargs)
         return self
     
+    @abstractmethod
     def _definition(self, model, X, y):
         """The definition of the PyMC3 model.
 

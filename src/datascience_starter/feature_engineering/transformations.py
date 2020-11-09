@@ -14,7 +14,7 @@ class RBFFeatures(base.TransformerMixin):
         self.alpha = alpha  #: A smoothing hyperparamter between (0,1) to control hump widths.
         self.months = ['jan', 'feb', 'mar', 'apr', 'may','jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']   #: An array of month strings.
 
-    def rbf(self, t: float, month: int, alpha: float) -> np.ndarray:
+    def _rbf(self, t: float, month: int, alpha: float) -> np.ndarray:
         """Radial basis function
 
         Args:
@@ -38,6 +38,6 @@ class RBFFeatures(base.TransformerMixin):
         Returns:
             A pandas dataframe with RBF Features concatenated to the dataframe.
         """
-        data = { k: self.rbf(X.index.month, i, self.alpha) for i, k in enumerate(self.months) }
+        data = { k: self._rbf(X.index.month, i, self.alpha) for i, k in enumerate(self.months) }
         data = pd.DataFrame(data, index=X.index)
         return pd.concat([data, X], axis=1)

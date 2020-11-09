@@ -4,10 +4,10 @@ import pandas as pd
 from typing import Dict, Any, Tuple
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.model_selection import ShuffleSplit
-from sklearn.base import BaseEstimator
 from tqdm import tqdm
+from abc import ABC
 
-class GridsearchCVBase(BaseEstimator):
+class GridsearchCVBase(ABC):
     """A base class for cross validated gridsearch.
 
     Args:
@@ -19,7 +19,7 @@ class GridsearchCVBase(BaseEstimator):
         super().__init__()
         self.estimator = estimator  #: A scikit learn estimator that implements fit and score methods.
         self.cv = cv    #: The number of folds in kflod cross validation.
-        self.splitter = None    #: A class for splitting the dataframe into k-folds.
+        self.splitter = NotImplemented   #: A class for splitting the dataframe into k-folds.
 
     def crossval(self, df: pd.DataFrame, parameters: Dict[str, Any], cv: int = 5) -> np.float:
         """Performs k-fold cross validation using the estimators score method and the provided splitter.
