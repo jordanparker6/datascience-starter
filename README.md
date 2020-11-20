@@ -1,3 +1,6 @@
+![example branch parameter](https://github.com/jordanparker6/datascience-starter/workflows/tests/badge.svg?branch=main)
+![](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)
+
 # datascience-starter
 A starter pack for data science projects.
 

@@ -5,6 +5,7 @@ from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from typing import Dict, Any
 
 class SARIMAX(BaseEstimator):
     """A class to fit and predict using the SARIMAX model.
@@ -16,13 +17,19 @@ class SARIMAX(BaseEstimator):
      Args:
        **kwargs: Key word arguements for the statsmodels SARIMAX class.
        Please see statsmodels for documentation.
+    
+     Attributes:
+        params: The model paramaters.
+        model: An instance of the statsmodels SARIMAX model.
+
     """
     def __init__(self, **kwargs):
         super().__init__()
-        self.params = kwargs
+        self.params: Dict[str, Any] = kwargs
+        self.model: SARIMAX = SARIMAX
 
     def fit(self, y: np.ndarray, max_iter: int = 50, method: str = 'powell', **kwargs):
-        self.model = SARIMAXModel(y, **self.params)
+        self.model = self.model(y, **self.params)
         self.model = self.model.fit(max_iter=max_iter, disp=0, method=method, **kwargs)
         return self
 

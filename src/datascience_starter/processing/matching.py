@@ -5,7 +5,7 @@ class DistanceMatcher:
     """
 
     def distance(self, a: np.ndarray, b: np.ndarray):
-        return np.linalg.norm(a - b, order=2)
+        return np.linalg.norm(a - b)
 
     def distance_matrix(self, a: np.ndarray, b: np.ndarray):
         result = []

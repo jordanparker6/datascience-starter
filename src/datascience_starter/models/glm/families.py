@@ -1,4 +1,3 @@
-import numpy as np
 import pymc3 as pm
 import theano.tensor as tt
 

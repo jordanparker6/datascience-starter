@@ -1,6 +1,7 @@
 """A module for abstract base classes.
 
-This module contains ABC for the development of estiamtors.
+This module contains abstract classes 
+for the development of estiamtors.
 
 """
 
@@ -14,10 +15,14 @@ class PyMC3Estimator(ABC):
     
     Attributes:
         model (pymc3.Model): A PyMC3 model object.
+        map: The Maxiumum A Posterior estimate of the parameter values.
+        trace: The sampled values from the posterior distributions.
 
     """
     def __init__(self):
         self.model = pm.Model()
+        self.map = None
+        self.trace = None
 
     def fit(self, X: np.ndarray, y: np.ndarray, samples: int = 1000, tune: int = 1000, **kwargs):
         """Defines the PyMC3 model and evaluates the trace and MAP.
@@ -29,10 +34,6 @@ class PyMC3Estimator(ABC):
             tune (optional): The number of samples to burn-in during HMCM.
             **kwargs: Additional key word arguements for PyMC3's pm.sample method.
         
-        Attributes:
-            map: The Maxiumum A Posterior estimate of the parameter values.
-            trace: The sampled values from the posterior distributions.
-            
         """
         with self.model as model:
             self._definition(model, X, y, **kwargs)
@@ -72,14 +73,11 @@ class PyMC3Estimator(ABC):
     def plot_posterior(self):
         pm.plot_posterior(self.trace)
 
-    def plot_joint(self):
-        pm.plot_joint(self.trace, kind='kde', fill_last=False)
-
     def plot_graph(self):
         return pm.model_to_graphviz(self.model)
 
     def plot_autocorr(self):
-        pm.plots.autocorrplot(trace=trace)
+        pm.plots.autocorrplot(trace=self.trace)
     
     def plot_energy(self):
         bfmi = np.max(pm.stats.bfmi(self.trace))

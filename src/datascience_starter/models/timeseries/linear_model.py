@@ -1,9 +1,7 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import GridSearchCV
-from sklearn.pipeline import make_pipeline 
 from sklearn.base import BaseEstimator
-from datascience_starter.feature_engineering.transformations import RBFFeatures
+from datascience_starter.feature_engineering import TimeseriesFeatures
 
 
 class LinearTimeseriesModel(BaseEstimator):
@@ -27,15 +25,15 @@ class LinearTimeseriesModel(BaseEstimator):
         self.params = { "alpha": alpha, "r": r }
         self.model = LinearRegression()
 
-    def transform(self, df, ylabel='y', fit=False):
-        rbf = RBFFeatures(self.params['alpha'])
+    def transform(self, df, ylabel='y'):
+        rbf = TimeseriesFeatures(self.params['alpha'])
         df = rbf.transform(df)
         X = df.drop([ylabel], axis=1)
         y = df[ylabel]
         return X, y
 
     def fit(self, df, ylabel='y'):
-        X, y = self.transform(df, ylabel, fit=True)
+        X, y = self.transform(df, ylabel)
         if self.params['r'] == 1:
             self.model.fit(X, y)
         else:

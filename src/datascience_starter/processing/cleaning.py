@@ -68,6 +68,6 @@ class Geocoder(AsyncFetch):
             result = result["results"][0]
             geometry = result["geometry"]["location"]
             return {"formatted_address": result["formatted_address"], "lng": geometry["lng"], "lat": geometry["lat"], "address": address}
-        except Exception as e:
+        except KeyError as e:
             self.log.error(f"{e} : {result}")
             return { "formatted_address" : "ERROR", "lng": None, "lat": None, "address": address }

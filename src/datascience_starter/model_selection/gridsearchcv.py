@@ -19,7 +19,7 @@ class GridsearchCVBase(ABC):
         super().__init__()
         self.estimator = estimator  #: A scikit learn estimator that implements fit and score methods.
         self.cv = cv    #: The number of folds in kflod cross validation.
-        self.splitter = NotImplemented   #: A class for splitting the dataframe into k-folds.
+        self.splitter = None  #: A class for splitting the dataframe into k-folds.
 
     def crossval(self, df: pd.DataFrame, parameters: Dict[str, Any], cv: int = 5) -> np.float:
         """Performs k-fold cross validation using the estimators score method and the provided splitter.
@@ -33,16 +33,17 @@ class GridsearchCVBase(ABC):
             The mean score for the cross validation.
 
         """
-        assert self.splitter != None, "No splitter specified"
-
-        cv = self.splitter(n_splits=cv)
-        score = []
-        for train_index, test_index in cv.split(df):
-            train, test = df.iloc[train_index, :], df.iloc[test_index, :]
-            model = self.estimator(**parameters)
-            model.fit(train)
-            score.append(model.score(test))
-        return np.array(score).mean()
+        if self.splitter == None:
+            raise NotImplementedError
+        else:
+            cv = self.splitter(n_splits=cv)
+            score = []
+            for train_index, test_index in cv.split(df):
+                train, test = df.iloc[train_index, :], df.iloc[test_index, :]
+                model = self.estimator(**parameters)
+                model.fit(train)
+                score.append(model.score(test))
+            return np.array(score).mean()
 
     def fit(self, df: pd.DataFrame, parameters: Dict[str, Any], min_loss: bool = True) -> Tuple[Dict[str, Any], np.ndarray]:
         """Fit method for cross validated grid search.
@@ -73,7 +74,7 @@ class GridsearchCV(GridsearchCVBase):
     """"A gridsearch and crossvalidation approach for iid datasets.
     """
     def __init__(self, estimator, cv: int = 5):
-        super().__init__()
+        super().__init__(estimator, cv)
         self.splitter = ShuffleSplit
 
 
@@ -81,5 +82,5 @@ class TimeseriesGridsearchCV(GridsearchCVBase):
     """"A gridsearch and crossvalidation approach for timeseries datasets.
     """
     def __init__(self, estimator, cv=5):
-        super().__init__()
+        super().__init__(estimator, cv)
         self.splitter = TimeSeriesSplit

@@ -39,7 +39,19 @@ class AsyncFetch(Logger):
             A list of json responses.
 
         """
-        return asyncio.run(self._async_fetch_all(urls, self._async_throttled_fetch, rate))
+        async def _fetch_all(self, urls: List[str], rate: Optional[int] = None) -> List[JsonType]:
+            connector = aiohttp.TCPConnector(verify_ssl=False, limit=100)
+            throttler = None
+            if rate:
+                throttler = Throttler(rate_limit=rate, period=1)
+            async with aiohttp.ClientSession(connector=connector) as session:
+                tasks = [self._throttler(session, url, throttler, i)  for i, url in enumerate(urls)]
+                responses = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
+            responses = sorted(responses, key=lambda x: x[1])
+            responses = list(map(lambda x: x[0], responses))
+            return responses
+            
+        return asyncio.run(_fetch_all(self, urls, rate))
 
     # ------------------------------------------------
     # - Async Handling Functions ---------------------
@@ -81,28 +93,4 @@ class AsyncFetch(Logger):
                 return await self._fetch(session, url, i)
         else:
             return await self._fetch(session, url, i)
-
-
-    async def _fetch_all(self, urls: List[str], rate: Optional[int] = None) -> List[JsonType]:
-        """ Gather many HTTP call made async
-
-        Args:
-            urls: a list of url strings
-            rate: the max number of coroutines
-
-        Returns:
-            A list of json response objects.
-
-        """
-        self.log.info('Starting: _async_fetch_all')
-        connector = aiohttp.TCPConnector(verify_ssl=False, limit=100)
-        throttler = None
-        if rate:
-            throttler = Throttler(rate_limit=rate, period=1)
-        async with aiohttp.ClientSession(connector=connector) as session:
-            tasks = [self._throttler(session, url, throttler, i)  for i, url in enumerate(urls)]
-            responses = [await f for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks))]
-        responses = sorted(responses, key=lambda x: x[1])
-        responses = list(map(lambda x: x[0], responses))
-        return responses
     
