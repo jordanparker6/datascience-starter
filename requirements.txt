@@ -12,3 +12,4 @@ sphinx
 sphinx-rtd-theme
 sphinx-markdown-builder
 pylint
+sparse_dot_topn.sparse_dot_topn

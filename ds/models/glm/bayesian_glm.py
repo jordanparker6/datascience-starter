@@ -3,10 +3,10 @@ import numbers
 import numpy as np
 import theano.tensor as tt
 from typing import Dict
-from datascience_starter.base import PyMC3Estimator
-from datascience_starter.models.glm.families import families
+from ds.models.base import PyMC3ModelBase
+from ds.models.glm.families import families
 
-class GLM(PyMC3Estimator):
+class GLM(PyMC3Model):
     """A bayesian implempentation of Generalized Linear Models.
 
     A GLM is a generalised approach to linear models that can model

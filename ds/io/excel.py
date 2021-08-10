@@ -1,10 +1,11 @@
 import xlwings as xw
 import pandas as pd
 from typing import Optional
+import logging
 
-from datascience_starter.utils import Logger
+log = logging.getLogger(__name__)
 
-class Excel(Logger):
+class Excel:
     """A class for interacting with Excel workbooks
     
     Args:
@@ -15,7 +16,7 @@ class Excel(Logger):
         super().__init__()
         self.file_name = file   #: The file name of the Excel workbook.
         self.wb = xw.Book(file) #: The xlwings workbook object.
-        self.log.info(f"Excel File Read: {file}")
+        log.info(f"Excel File Read: {file}")
 
     def to_df(self, sheet: str, cell: str = "A1", expand: str = 'table'):
         """Convert an Excel table to a pandas dataframe.

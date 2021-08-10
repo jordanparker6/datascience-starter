@@ -9,8 +9,8 @@ def readlines(fname):
 
 metadata = dict(
     name='datascience_starter',
-    packages=find_packages(where='./src'),
-    package_dir={"": "src"},
+    packages=find_packages(where='./datascience_starter'),
+    package_dir={"": "datascience_starter"},
     install_requires=readlines('requirements.txt'),
     description='An data science project start up pack.',
     author='Jordan Parker',

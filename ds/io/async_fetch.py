@@ -2,14 +2,15 @@ import tqdm
 import json
 import asyncio
 import aiohttp
+import logging
 from asyncio_throttle import Throttler
 from typing import Dict, List, Any, Optional
 
-from datascience_starter.utils import Logger
+log = logging.getLogger(__name__)
 
 JsonType = Dict[str, Any]
 
-class AsyncFetch(Logger):
+class AsyncFetch:
     """ A base class for asyncronus HTTP fetching.
     """
 
@@ -71,7 +72,7 @@ class AsyncFetch(Logger):
         """
         async with session.get(url, timeout=60*30) as response:
             resp = await response.read()
-            self.log.debug(f'Made request: {url}. Status: {response.status}')
+            log.debug(f'Made request: {url}. Status: {response.status}', data=resp)
             return json.loads(resp), i
 
     async def _throttler(self, session: aiohttp.ClientSession, url: str, throttler: Throttler, i: int):
