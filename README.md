@@ -4,7 +4,7 @@
 # datascience-starter
 A starter pack for data science projects.
 
-This repo is designed to bootstrap data science projects by providing a working enviroment for the development of Jupyter Notebooks. Usefull classes from past projects are collected in src/datascience_starter. Theses classes are made available through the datasience_starter package. Please use this classes to aid the development of jupyter notebooks within the notebooks dir.
+This repo is designed to bootstrap data science projects by providing a working enviroment for the development of Jupyter Notebooks. Usefull classes from past projects are collected in src/datascience_starter. Theses classes are made available through the datasience_starter package. Please use these classes to aid the development of jupyter notebooks within the notebooks dir.
 
 #### Use Case
 
