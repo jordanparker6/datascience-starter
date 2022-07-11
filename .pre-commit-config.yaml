@@ -1,0 +1,147 @@
+repos:
+  ##############################################################################
+  #  General checks
+  ##############################################################################
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.2.0
+    hooks:
+      - id: forbid-new-submodules
+      - id: fix-encoding-pragma
+        args: [--remove]
+      - id: end-of-file-fixer
+        types_or: [python, cython, rust]
+      - id: trailing-whitespace
+        types_or: [python, cython]
+      - id: debug-statements
+      - id: detect-private-key
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.1.0
+    hooks:
+      - id: codespell
+        description: Checks for common misspellings.
+        types_or: [python, markdown]
+
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        args: [
+            --line-length=100,
+        ]
+        files: "^datapuller"
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        args: [
+            --combine-as,
+            --line-length=100,
+            --ensure-newline-before-comments,
+            --force-single-line-imports,
+            --single-line-exclusions=typing,
+            --trailing-comma,
+            --multi-line=3,
+            --lines-after-imports=2,
+            --use-parentheses,
+        ]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.960
+    hooks:
+      - id: mypy
+        args: [
+            --no-strict-optional,
+            --ignore-missing-imports,
+            --warn-no-return,
+        ]
+        files: "^datapuller"
+        additional_dependencies: [
+            pydantic,
+            types-requests,
+        ]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        name: flake8 (Python)
+        files: "^datapuller"
+        additional_dependencies:
+          - bandit==1.7.2  # Pin due issue https://github.com/PyCQA/bandit/issues/841
+          - flake8-2020
+          - flake8-bandit
+          - flake8-bugbear
+          - flake8-coding
+#          - flake8-comprehensions
+          - flake8-debugger
+          - flake8-deprecated
+#          - flake8-docstrings
+          - flake8-pep3101
+          - flake8-string-format
+#          - flake8-rst-docstrings
+          - flake8-typing-imports
+#          - pep8-naming
+        types: [python]
+        args: [
+            --max-complexity=10,
+            --max-line-length=150,
+            --statistics,
+            --ignore=C101 E203 E252 E402 D100 D101 D102 S101 S403 S404 W503,
+            --min-python-version=3.8.0
+        ]
+
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+        files: ^datapuller
+        args:
+        - "--ignore=D100,D102,D103,D104,D107,D105,D200,D203,D205,D212,D400,D413,D415"
+        additional_dependencies:
+          - toml
+
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.5.0
+    hooks:
+      - id: nbstripout
+
+# flake8 ignore justifications
+# ----------------------------
+# C101: Coding magic comment not found
+# D100: Missing docstring in public module (picks up entire test suite)
+# D101: Missing docstring in public class (picks up entire test suite)
+# D102: Missing docstring in public method (picks up entire test suite)
+# E203: whitespace before ':' (conflicts with Black)
+# E225: missing whitespace around operator (picks up cython casting)
+# E226: missing whitespace around arithmetic operator (picks up C pointers)
+# E227: missing whitespace around bitwise or shift operator (picks up C pointers)
+# E252: spaces around default argument assignment (incorrect syntax)
+# E402: module level import not at top of file (workaround to assist imports in examples)
+# E999: SyntaxError: invalid syntax (cimport seen as invalid syntax)
+# S101: Use of assert detected (use of assert normal for pytest)
+# S403: Consider possible security implications associated with pickle module (pickle ok!)
+
+# pydocstyle ignore justifications
+# --------------------------------
+# D100: Missing docstring in public module  **fix**
+# D102: Missing docstring in public method  **fix**
+# D103: Missing docstring in public function  **fix**
+# D104: Missing docstring in public package  **fix**
+# D200: One-line docstring should fit on one line with quotes (optional style)
+# D203: 1 blank line required before class docstring (optional style)
+# D205: 1 blank line required between summary line and description (optional style)
+# D212: Multi-line docstring summary should start at the first line (optional style)
+# D400: First line should end with a period (not always a first line)
+# D413: Missing blank line after last section ('Parameters')
+# D415: First line should end with a period, question mark, or exclamation point (not always a first line)

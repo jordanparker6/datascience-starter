@@ -1,5 +1,8 @@
 """An implementation of the Processor interface and ProcessorPipeline"""
-from ds.core.base import Base
+from abc import abstractmethod
+from typing import List, Optional
+import pandas as pd
+from starter_pack.core.base import Base
 
 class ProcessBase(Base):
     """A base class to implement a processor interface."""

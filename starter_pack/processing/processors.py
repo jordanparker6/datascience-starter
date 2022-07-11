@@ -1,8 +1,9 @@
 """A collection of implementations of ProcessorBase"""
+from typing import List, Callable
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder as SKLearnOneHotEncoder
-from ds.processing.base import ProcessBase
-from ds.io import AsyncFetch
+from starter_pack.processing.base import ProcessBase
+from starter_pack.io import AsyncFetch
 
 class DropColumns(ProcessBase):
     """Drops columns from the dataset."""
@@ -28,7 +29,7 @@ class ReplaceNaN(ProcessBase):
         return self.fit(df)
     
     def inverse_transform(self, df: pd.DataFrame):
-        log.warning("ReplaceNaN.inverse_transform() currently doesn't support an inverse_transfrom. Original DataFrame returned")
+        self.log.warning("ReplaceNaN.inverse_transform() currently doesn't support an inverse_transfrom. Original DataFrame returned")
         return df
         
     
@@ -134,7 +135,7 @@ class Sentence2Vec(ProcessBase):
         return self.fit(df)
 
     def inverse_transform(self, df: pd.DataFrame):
-        log.warning("Sentence2Vec.inverse_transform() currently doesn't support an inverse_transfrom. Original DataFrame returned")
+        self.log.warning("Sentence2Vec.inverse_transform() currently doesn't support an inverse_transfrom. Original DataFrame returned")
         return df
 
 class Transform(ProcessBase):
@@ -154,5 +155,5 @@ class Transform(ProcessBase):
     
     def inverse_transform(self, df: pd.DataFrame):
         dropcols = [f"{col}_{self.suffix}" for col in self.columns]
-        df = df.drop(columns=cols)
+        df = df.drop(columns=dropcols)
         return df

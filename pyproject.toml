@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "datascience-starter"
+version = "0.1.0"
+description = "A collection of reusable code to assist with data science projects."
+authors = ["Jordan Parker <jordanhparker6@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+pandas = "^1.4.3"
+sklearn = "^0.0"
+tqdm = "^4.64.0"
+matplotlib = "^3.5.2"
+seaborn = "^0.11.2"
+tika = "^1.24"
+statsmodels = "^0.13.2"
+pymc3 = "^3.11.5"
+asyncio-throttle = "^1.0.2"
+
+[tool.poetry.dev-dependencies]
+Sphinx = "^5.0.2"
+sphinx-rtd-theme = "sphinx-markdown-builder"
+sphinx-markdown-builder = "^0.5.5"
+pytest = "^7.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

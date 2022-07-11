@@ -1,11 +1,11 @@
 from sklearn.base import BaseEstimator
-import statsmodels.api as sm
 from statsmodels.tsa.statespace.sarimax import SARIMAX as SARIMAXModel
-from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from typing import Dict, Any
+from tqdm import tqdm
+from .utils import check_stationary
 
 class SARIMAX(BaseEstimator):
     """A class to fit and predict using the SARIMAX model.
@@ -26,7 +26,7 @@ class SARIMAX(BaseEstimator):
     def __init__(self, **kwargs):
         super().__init__()
         self.params: Dict[str, Any] = kwargs
-        self.model: SARIMAX = SARIMAX
+        self.model: SARIMAXModel = SARIMAXModel
 
     def fit(self, y: np.ndarray, max_iter: int = 50, method: str = 'powell', **kwargs):
         self.model = self.model(y, **self.params)
@@ -75,12 +75,40 @@ class SARIMAX(BaseEstimator):
         return self._mape(y[shift:].values, yhat[shift:].values)
 
     def check_stationary(self, y: np.ndarray, alpha: float = 0.05):
-        result = adfuller(y)
-        print('ADF Statistic: %f' % result[0])
-        print('p-value: %f' % result[1])
-        for key, value in result[4].items():
-            print('\t%s: %.3f' % (key, value))
-        return result[1] <= alpha
+        return check_stationary(y, alpha)
 
     def _mape(self, y: np.ndarray, yhat: np.ndarray):
         return np.mean(np.abs((y - yhat) / y)) * 100
+
+def optimize_SARIMA(parameters_list, d, D, s, exog):
+    """
+        Return dataframe with parameters, corresponding AIC and SSE
+        
+        parameters_list - list with (p, q, P, Q) tuples
+        d - integration order
+        D - seasonal integration order
+        s - length of season
+        exog - the exogenous variable
+    """
+    
+    results = []
+    
+    for param in tqdm(parameters_list):
+        try: 
+            model = SARIMAX(
+                exog, 
+                order=(param[0], d, param[1]), 
+                seasonal_order=(param[2], D, param[3], s)
+            ).fit(disp=-1)
+        except:
+            continue
+            
+        aic = model.aic
+        results.append([param, aic])
+        
+    result_df = pd.DataFrame(results)
+    result_df.columns = ['(p,q)x(P,Q)', 'AIC']
+    #Sort in ascending order, lower AIC is better
+    result_df = result_df.sort_values(by='AIC', ascending=True).reset_index(drop=True)
+    
+    return result_df
